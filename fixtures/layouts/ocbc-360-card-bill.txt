@@ -1,0 +1,13 @@
+OCBC Bank
+   360 Account
+   Account Number: 501-777777-001
+   Statement Period: 01 FEB 2026 to 28 FEB 2026
+
+   Date        Value Date   Description                         Withdrawal      Deposit       Balance
+   01 FEB                   BALANCE B/F                                                       2,000.00
+   10 FEB      10 FEB       CARD PAYMENT                           200.00                     1,800.00
+                            TO OCBC 90N
+   28 FEB                   BALANCE C/F                                                       1,800.00
+
+   Total Withdrawals: 200.00
+   Total Deposits: 0.00

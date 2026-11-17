@@ -1,0 +1,13 @@
+{
+  "type": "order",
+  "version": 1,
+  "event_id": "wh-lazada-001",
+  "merchant": "lazada",
+  "order_id": "LZ20261012042",
+  "placed_at": "2026-10-12T10:04:00+08:00",
+  "currency": "SGD",
+  "total": 12.9,
+  "items": [
+    { "name": "USB-C cable", "qty": 1, "unit_price": 12.9 }
+  ]
+}

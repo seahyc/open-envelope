@@ -1,0 +1,19 @@
+DBS/POSB Consolidated Statement
+   Statement Period: 01 AUG 2026 to 31 AUG 2026
+
+   POSB eSavings Account
+   Account No. 112-60901-6
+
+   Date         Description                         Withdrawal      Deposit       Balance
+                Balance Brought Forward                                           365.39
+   21/08/2026   FAST Collection                                      20.00        385.39
+   22/08/2026   PayNow Transfer to JAMIE LEE          60.00                       325.39
+                Total Balance Carried Forward:           60.00        20.00       325.39
+
+   Total Withdrawals                                                    60.00
+   Total Deposits                                                       20.00
+
+   POSB Multiplier Account
+   Account No. 112-60902-4
+   Balance Brought Forward                                                0.00
+   Total Balance Carried Forward:                         0.00         0.00         0.00

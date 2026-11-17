@@ -1,0 +1,18 @@
+OCBC Bank
+   90°N Card Statement
+
+   5524-1001-0018-4411
+
+   STATEMENT DATE
+   28-02-2026
+
+   LAST MONTH'S BALANCE                                                             1,100.00
+
+   TRANSACTION DATE     DESCRIPTION                                              AMOUNT (SGD)
+   20/01   -2222 PRE START BOOKSTORE  SINGAPORE   SGP                                 50.00
+   26/01   -3333 GAP DAY GRAB         SINGAPORE   SGP                                 25.00
+   05/02   -4444 FEB COFFEE           SINGAPORE   SGP                                 10.00
+
+   SUBTOTAL                                                                            85.00
+   TOTAL                                                                              1,185.00
+   TOTAL AMOUNT DUE                                                                   1,185.00

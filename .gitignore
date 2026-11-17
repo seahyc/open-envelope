@@ -1,0 +1,17 @@
+node_modules/
+dist/
+data/
+backups/
+*.log
+.DS_Store
+.env
+.env.local
+*.db
+accounts.yaml
+!fixtures/singapore/accounts.yaml
+*.db-shm
+*.db-wal
+test-results/
+playwright-report/
+age-key.txt
+*.age

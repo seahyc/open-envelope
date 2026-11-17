@@ -1,0 +1,19 @@
+From: no-reply@grab.com
+To: alex@example.test
+Subject: GrabFood e-Receipt
+Date: Wed, 14 Oct 2026 12:05:00 +0000
+Message-ID: <grab-food-001@grab.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+GrabFood e-Receipt
+Booking ID: GF-4400123
+
+1 x Nasi lemak S$ 6.50
+1 x Teh peng S$ 1.80
+
+Fare: S$ 8.30
+Delivery fee: S$ 2.00
+Total: S$ 10.30
+
+Order from Kopi Corner via GrabFood.

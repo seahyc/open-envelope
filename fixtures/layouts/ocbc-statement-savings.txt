@@ -1,0 +1,17 @@
+OCBC Bank
+   Statement Savings Account
+   Account No. 550-765432-008
+   Statement Period: 01 JUL 2026 to 31 JUL 2026
+
+   Date        Value Date   Description                         Withdrawal      Deposit       Balance
+   01 JUL                   BALANCE B/F                                                         800.00
+   07 JUL      07 JUL       FAST PAYMENT                          120.00                        680.00
+                            via PayNow-Mobile
+                            to RIVER TAN
+   15 JUL      15 JUL       INTEREST CREDIT                                          0.40       680.40
+   31 JUL                   BALANCE C/F                                                         680.40
+
+   Deposit Insurance Scheme
+   Singapore dollar deposits of non-bank depositors are insured by the Singapore
+   Deposit Insurance Corporation for up to S$100,000. This includes CPF Investment Scheme.
+   This includes Supplementary Retirement Scheme accounts.

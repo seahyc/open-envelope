@@ -1,0 +1,13 @@
+name = "openenvelope-email-ingest"
+main = "src/index.ts"
+compatibility_date = "2026-10-28"
+
+# One catch-all on the dedicated ingest hostname (not the apex zone).
+# Example: *@ingest.example.com → this Worker. Leave the apex catch-all alone.
+
+[vars]
+OPENENVELOPE_INGEST_URL = "https://YOUR_OPENENVELOPE_HOST"
+
+# Set secrets (not in git):
+#   npx wrangler secret put EMAIL_INGEST_HMAC_SECRET
+# Must match the app's EMAIL_INGEST_HMAC_SECRET.

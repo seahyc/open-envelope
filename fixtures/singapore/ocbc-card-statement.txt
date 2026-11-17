@@ -1,0 +1,19 @@
+OCBC Bank Credit Card Statement
+
+   Statement Period: 01 JAN 2024 to 31 JAN 2024
+   Card Number: 4111 1111 1111 2345
+
+   Transaction Date  Post Date  Description                           Amount
+   15 JAN           16 JAN     FAIRPRICE FINEST ORCHARD             125.50
+   16 JAN           17 JAN     GRAB SINGAPORE                        28.90
+   18 JAN           19 JAN     AMAZON.COM.SG                        234.80
+   20 JAN           21 JAN     COLD STORAGE JURONG                   89.60
+   22 JAN           22 JAN     PAYMENT RECEIVED                     500.00 CR
+   25 JAN           26 JAN     SHOPEE SINGAPORE                      67.40
+   28 JAN           29 JAN     MCDONALD'S TAMPINES                   15.20
+
+   Previous Balance: 1,234.50
+   Total Transactions: 61.40
+   New Balance: 1,295.90
+   Minimum Payment Due: 68.85
+   Payment Due Date: 15 FEB 2024

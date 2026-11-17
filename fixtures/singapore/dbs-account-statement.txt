@@ -1,0 +1,18 @@
+DBS/POSB Bank Account Statement
+
+   Account: 123-45678-9
+   Statement Date: 01 JAN to 31 JAN 2024
+
+   Opening Balance: 3,456.80 SGD
+
+   Date    Description                     Withdrawal    Balance
+   03 JAN  SALARY FROM ACME PTE LTD                     8,456.80
+   07 JAN  FAST TRANSFER TO SAVINGS        500.00       7,956.80
+   10 JAN  GIRO - SINGTEL MOBILE           89.50        7,867.30
+   15 JAN  NETS FAIRPRICE XTRA             156.70       7,710.60
+   18 JAN  ATM CASH WITHDRAWAL             300.00       7,410.60
+   22 JAN  PAYNOW FROM ALEX                            7,510.60
+   25 JAN  INTEREST CREDITED                            7,518.42
+   28 JAN  BILL PAYMENT - UTILITIES        145.80       7,372.62
+
+   Closing Balance: 7,372.62 SGD

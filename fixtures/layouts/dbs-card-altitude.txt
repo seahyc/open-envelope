@@ -1,0 +1,25 @@
+DBS Bank
+   Altitude Visa Signature
+
+   CARD NO.: 4119 0011 2233 4455
+
+   STATEMENT DATE     CREDIT LIMIT     MINIMUM PAYMENT     PAYMENT DUE DATE
+   23 JUL 2026        $10,000.00       $50.00              N.A.
+
+   STATEMENT DATE
+   20 MAR 2026
+
+   PAYMENT DUE DATE
+   14 APR 2026
+
+   PREVIOUS BALANCE                                                                 50.00
+
+   TRANS DATE   DESCRIPTION                                                      AMOUNT
+   20 MAR   PREVIOUS BALANCE                                                         50.00
+   20 MAR   ANNUAL FEE                                                             180.00
+   21 MAR   NTUC FAIRPRICE                                                          25.40
+            REF NO: 8899001122
+   22 MAR   PAYMENT THANK YOU                                                      200.00 CR
+
+   TOTAL:                                                                           55.40
+   31 MAR   GRAND TOTAL                                                             55.40

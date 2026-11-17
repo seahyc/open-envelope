@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  openenvelope:
+    build: .
+    ports:
+      - "3100:3100"
+    environment:
+      - PORT=3100
+      - DATABASE_PATH=/data/openenvelope.db
+      - OBJECT_STORAGE_LOCAL_PATH=/data/documents
+      - LLM_PROVIDER=none
+      - CATEGORISER_PROVIDER=codex
+      - CODEX_BIN=/usr/local/bin/codex
+      - CODEX_MODEL=gpt-6-luna
+      - CODEX_REASONING_EFFORT=low
+      - CODEX_HOME=/tmp/codex-home
+      - CODEX_EXTRA_CONFIG=mcp_servers={}
+      - ALLOWED_EMAILS=user@example.com
+      - AUTH_MODE=header
+      - CF_ACCESS_TEAM_DOMAIN=${CF_ACCESS_TEAM_DOMAIN:-}
+      - CF_ACCESS_AUD=${CF_ACCESS_AUD:-}
+      - DEMO_MODE=false
+    volumes:
+      - ./data:/data
+      - ~/.codex/auth.json:/codex-auth/auth.json:ro
+    restart: unless-stopped
+    user: node
+
+# Usage:
+# 1. On the host: codex login  (creates ~/.codex/auth.json)
+# 2. Mount that auth.json read-only at /codex-auth/auth.json
+# 3. The image ships @openai/codex@0.164.0; sessions go to tmpfs CODEX_HOME
+# 4. docker compose up -d

@@ -1,0 +1,18 @@
+{
+  "api": "order/get",
+  "page": "https://www.lazada.sg/order/history",
+  "note": "Synthetic fixture modelled on a public Lazada order-list JSON shape. Not a live capture.",
+  "data": {
+    "orders": [
+      {
+        "orderNumber": "LZ-20261014-001",
+        "createdAt": "2026-10-14T10:00:00+08:00",
+        "grandTotal": { "amount": 21.0, "currency": "SGD" },
+        "items": [
+          { "name": "USB-C cable", "quantity": 1, "price": 12.9 },
+          { "name": "Phone case", "quantity": 1, "price": 8.1 }
+        ]
+      }
+    ]
+  }
+}

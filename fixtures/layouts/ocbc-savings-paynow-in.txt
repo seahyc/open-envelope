@@ -1,0 +1,15 @@
+OCBC Bank
+   Statement Savings Account
+   Account No. 550-111111-002
+   Statement Period: 01 MAR 2026 to 31 MAR 2026
+
+   Date        Value Date   Description                         Withdrawal      Deposit       Balance
+   01 MAR                   BALANCE B/F                                                         400.00
+   08 MAR      08 MAR       PayNow Transfer                                         88.00       488.00
+                            from 501-666666-001
+   31 MAR                   BALANCE C/F                                                         488.00
+
+   Deposit Insurance Scheme
+   Singapore dollar deposits of non-bank depositors are insured by the Singapore
+   Deposit Insurance Corporation for up to S$100,000. This includes CPF Investment Scheme.
+   This includes Supplementary Retirement Scheme accounts.

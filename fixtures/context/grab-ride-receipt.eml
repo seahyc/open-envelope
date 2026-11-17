@@ -1,0 +1,19 @@
+From: receipts@grab.com
+To: alex@example.test
+Subject: Your Grab e-Receipt
+Date: Wed, 14 Oct 2026 11:20:00 +0000
+Message-ID: <grab-ride-001@grab.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+Grab e-Receipt
+Booking ID: A-8899001
+
+Grab ride · Orchard to Holland Village
+
+Fare: S$ 8.50
+Booking fee: S$ 0.70
+Promo: -S$ 1.00
+Total: S$ 8.20
+
+Thank you for riding with Grab.

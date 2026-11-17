@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "OpenEnvelope order grab",
+  "version": "0.1.0",
+  "description": "On your own Shopee/Lazada order-history page, click the toolbar to send orders to OpenEnvelope. No background scrape.",
+  "action": {
+    "default_title": "Send this order page to OpenEnvelope"
+  },
+  "options_page": "options.html",
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "permissions": ["activeTab", "scripting", "storage"],
+  "host_permissions": [
+    "https://shopee.sg/*",
+    "https://*.shopee.sg/*",
+    "https://www.lazada.sg/*",
+    "https://*.lazada.sg/*"
+  ]
+}

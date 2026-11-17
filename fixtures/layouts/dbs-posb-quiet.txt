@@ -1,0 +1,14 @@
+DBS/POSB Consolidated Statement
+   Statement Period: 01 SEP 2026 to 30 SEP 2026
+
+   Account Summary
+   POSB eSavings Account                                 Account No. 112-60901-6
+   Balance Brought Forward                                              325.39
+   Total Withdrawals                                                      0.00
+   Total Deposits                                                         0.00
+   Total Balance Carried Forward:                         0.00         0.00       325.39
+
+   POSB Multiplier Account
+   Account No. 112-60902-4
+   Balance Brought Forward                                                0.00
+   Total Balance Carried Forward:                                         0.00

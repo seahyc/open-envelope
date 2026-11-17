@@ -1,0 +1,61 @@
+{
+  "name": "open-envelope",
+  "version": "0.1.0",
+  "description": "Envelope budgeting for the agentic era",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/server/index.ts",
+    "build": "tsc && vite build",
+    "start": "node dist/server/index.js",
+    "test": "vitest",
+    "test:ci": "vitest run",
+    "test:e2e": "playwright test",
+    "typecheck": "tsc --noEmit",
+    "import": "tsx scripts/import.ts",
+    "reconcile": "node dist/scripts/reconcile.js",
+    "detect-transfers": "node dist/scripts/detect-transfers.js",
+    "eval:categoriser": "tsx scripts/eval-categoriser.ts",
+    "distill:rules": "tsx scripts/distill-category-rules.ts",
+    "smoke:compose": "bash scripts/docker-compose-smoke.sh",
+    "check-secrets": "gitleaks detect --no-git -v"
+  },
+  "dependencies": {
+    "@dagrejs/dagre": "^3.1.3",
+    "@hono/node-server": "^1.13.7",
+    "@typesafe-ai/sdk": "^0.7.0",
+    "@xyflow/react": "^12.12.0",
+    "better-sqlite3": "^11.8.1",
+    "hono": "^4.6.14",
+    "pdf-parse": "^1.1.4",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tweetnacl": "^1.0.3",
+    "yaml": "^2.9.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.64.1",
+    "@tailwindcss/vite": "^4.3.3",
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/node": "^22.10.2",
+    "@types/pdf-parse": "^1.1.5",
+    "@types/pdfkit": "^0.17.7",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "pdfkit": "^0.20.2",
+    "tailwindcss": "^4.3.3",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7",
+    "vitest": "^2.1.8"
+  },
+  "engines": {
+    "node": ">=20 <24"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seahyc/open-envelope.git"
+  }
+}

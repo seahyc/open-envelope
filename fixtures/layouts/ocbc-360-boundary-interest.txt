@@ -1,0 +1,15 @@
+OCBC Bank
+   360 Account
+   Account Number: 501-888888-001
+   Statement Period: 01 AUG 2026 to 31 AUG 2026
+
+   Date        Value Date   Description                         Withdrawal      Deposit       Balance
+   01 AUG                   BALANCE B/F                                                         100.00
+   12 AUG      12 AUG       FAST PAYMENT                            20.00                        80.00
+                            via PayNow-Mobile
+                            to RIVER TAN
+   31 AUG      31 AUG       INTEREST CREDIT                                          1.25        81.25
+   31 AUG                   BALANCE C/F                                                          81.25
+
+   Total Withdrawals: 20.00
+   Total Deposits: 1.25

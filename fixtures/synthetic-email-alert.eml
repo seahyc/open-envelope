@@ -1,0 +1,23 @@
+From: alerts@samplebank.example
+To: alex@example.com
+Subject: Card Alert - Purchase Made
+Date: Thu, 25 Jan 2024 14:30:00 -0800
+Message-ID: <alert-20240125-143000@samplebank.example>
+
+Hello Alex,
+
+A purchase was made with your Card ending in 1111 for $89.99 at Amazon Purchase on 01/25/2024 at 2:30 PM PST.
+
+Transaction Details:
+- Card: ****1111
+- Amount: $89.99
+- Merchant: Amazon Purchase
+- Date/Time: 01/25/2024 2:30 PM PST
+- Location: Online
+
+If you did not make this purchase, please contact us immediately at 1-800-555-0123.
+
+Thank you for banking with Sample Bank.
+
+Sample Bank Security Team
+This is an automated message, please do not reply.

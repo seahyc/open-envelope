@@ -1,0 +1,10 @@
+id,merchant,account,amount_cents,memo,category_id
+x1,GRAB * RIDE ORCHARD,acc-joint,-1340,trip,exp.transport.ride
+x2,GRABFOOD BEDOK,acc-joint,-1620,dinner,exp.food.dining.hawker
+x3,NTUC FAIRPRICE,acc-joint,-4100,shop,exp.food.groceries
+x4,IRAS,acc-joint,-18000,itx,exp.tax.income
+x5,AMAZON MARKETPLACE,acc-card,-3200,order,exp.retail.online
+x6,SALARY ACME PTE,acc-joint,350000,pay,inc.salary
+x7,CREDIT CARD PAYMENT,acc-joint,-88000,visa,xfer.card
+x8,TRANSFER TO OWN SAVINGS,acc-joint,-20000,sweep,xfer.own
+x9,ASK MERCHANT #2,acc-joint,-700,unknown,flag

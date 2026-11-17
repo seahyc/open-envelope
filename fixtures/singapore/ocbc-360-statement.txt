@@ -1,0 +1,20 @@
+OCBC 360 Account Statement
+
+   Account Number: 501-123456-001
+   Statement Period: 01 JAN 24 to 31 JAN 24
+
+   Opening Balance: SGD 5,234.50
+
+   Date           Description                  Withdrawal    Deposit      Balance
+   05 JAN 24      SALARY CREDIT                0.00          4,500.00     9,734.50
+   08 JAN 24      FAST PAYMENT TO SAM          250.00        0.00         9,484.50
+   12 JAN 24      GIRO - SP SERVICES           125.30        0.00         9,359.20
+   15 JAN 24      ATM WITHDRAWAL               200.00        0.00         9,159.20
+   18 JAN 24      INTEREST EARNED              0.00          12.50        9,171.70
+   22 JAN 24      PAYNOW TRANSFER              500.00        0.00         8,671.70
+   28 JAN 24      CASHBACK CREDIT              0.00          25.00        8,696.70
+
+   Closing Balance: SGD 8,696.70
+
+   Total Withdrawals: 1,075.30
+   Total Deposits: 4,537.50

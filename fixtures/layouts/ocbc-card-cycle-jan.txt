@@ -1,0 +1,16 @@
+OCBC Bank
+   90°N Card Statement
+
+   5524-1001-0018-4411
+
+   STATEMENT DATE
+   24-01-2026
+
+   LAST MONTH'S BALANCE                                                             1,000.00
+
+   TRANSACTION DATE     DESCRIPTION                                              AMOUNT (SGD)
+   10/01   -1111 JAN GROCER           SINGAPORE   SGP                                100.00
+
+   SUBTOTAL                                                                           100.00
+   TOTAL                                                                              1,100.00
+   TOTAL AMOUNT DUE                                                                   1,100.00

@@ -1,0 +1,14 @@
+OCBC Bank
+   360 Account
+   Account Number: 501-666666-001
+   Statement Period: 01 MAR 2026 to 31 MAR 2026
+
+   Date        Value Date   Description                         Withdrawal      Deposit       Balance
+   01 MAR                   BALANCE B/F                                                       1,000.00
+   08 MAR      08 MAR       FAST PAYMENT                            88.00                       912.00
+                            via PayNow-Mobile
+                            to 550-111111-002
+   31 MAR                   BALANCE C/F                                                         912.00
+
+   Total Withdrawals: 88.00
+   Total Deposits: 0.00

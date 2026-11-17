@@ -1,0 +1,15 @@
+From: googleplay-noreply@google.com
+To: alex@example.test
+Subject: Your Google Play purchase
+Date: Wed, 14 Oct 2026 15:00:00 +0000
+Message-ID: <play-001@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+Google Play receipt
+
+Order number: GPA.1234-5678-9012-34567
+Item: Pixel puzzles
+You paid S$ 4.98
+
+This is a receipt for your Google Play purchase.

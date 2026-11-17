@@ -1,0 +1,21 @@
+DBS/POSB Consolidated Statement
+   Statement Period: 01 NOV 2026 to 30 NOV 2026
+
+   Account Summary
+      POSB eSavings Account   123-45678-9   SGD   1,000.00
+      POSB Multiplier Account  123-45679-0   SGD   0.00
+
+   Transaction Details
+   POSB eSavings Account
+   Account No. 123-45678-9
+
+   Date         Description                         Withdrawal      Deposit       Balance
+                Balance Brought Forward                                           1,000.00
+   05/11/2026   FAST Collection                                      50.00        1,050.00
+   12/11/2026   PayNow Transfer to SYNTHETIC LEE      80.00                       970.00
+                Total Balance Carried Forward:           80.00        50.00       970.00
+
+   POSB Multiplier Account
+   Account No. 123-45679-0
+   Balance Brought Forward                                                0.00
+   Total Balance Carried Forward:                                         0.00

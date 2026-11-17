@@ -1,0 +1,12 @@
+From: alerts@dbs.com.sg
+To: sam@example.com
+Subject: DBS Card Transaction Notification
+Date: Wed, 05 Nov 2026 21:40:00 +0800
+Message-ID: <dbs-fx-001@dbs.com.sg>
+
+Your DBS Credit Card ending 6789 was used for a foreign currency transaction.
+
+Transaction Amount: USD 18.90
+Merchant: AMAZON WEB SERVICES
+Date: 05/11/2026
+Time: 21:40

@@ -1,0 +1,70 @@
+# Account mappings for bulk import
+# Map folder patterns to account aliases
+# 
+# Usage:
+#   cp accounts.yaml.example accounts.yaml
+#   Edit accounts.yaml with your account mappings
+#   npm run import -- ./statements
+#
+# Folder structure example:
+#   statements/
+#     OCBC_CreditCard/26-09_OCBC_CC_xxxx.pdf
+#     DBS_Account/26-09_DBS_Acct.pdf
+#     CPF/26-09_CPF_Statement.pdf
+#     360_Account/statement.csv
+#     PayLah/paylah-alert.eml
+
+accounts:
+  - folderPattern: "OCBC_CreditCard"
+    accountAlias: "card-2345"
+    accountName: "OCBC Credit Card"
+    accountType: "credit"
+    institution: "OCBC"
+    aliases: ["card-2345"]
+  
+  - folderPattern: "DBS_Account"
+    accountAlias: "123456789"
+    accountName: "DBS Checking"
+    accountType: "budget"
+    institution: "DBS"
+    aliases: ["123456789", "123-45678-9"]
+  
+  - folderPattern: "DBS_Card"
+    accountAlias: "card-6789"
+    accountName: "DBS Credit Card"
+    accountType: "credit"
+    institution: "DBS"
+    aliases: ["card-6789"]
+  
+  - folderPattern: "360_Account"
+    accountAlias: "501123456001"
+    accountName: "OCBC 360"
+    accountType: "budget"
+    institution: "OCBC"
+    aliases: ["501123456001", "501-123456-001"]
+
+  - folderPattern: "PayLah"
+    accountAlias: "paylah"
+    accountName: "PayLah Wallet"
+    accountType: "budget"
+    institution: "DBS"
+    aliases: ["paylah"]
+  
+  - folderPattern: "CPF"
+    accountAlias: "CPF-OA"
+    accountName: "CPF Ordinary Account"
+    accountType: "tracking"
+    institution: "CPF"
+    aliases: ["CPF-OA"]
+
+  - accountAlias: "CPF-SA"
+    accountName: "CPF Special Account"
+    accountType: "tracking"
+    institution: "CPF"
+    aliases: ["CPF-SA"]
+
+  - accountAlias: "CPF-MA"
+    accountName: "CPF Medisave Account"
+    accountType: "tracking"
+    institution: "CPF"
+    aliases: ["CPF-MA"]

@@ -1,0 +1,8 @@
+merchant_key,category_id,count,flag_ask
+GRAB,exp.transport.ride,41,0
+GRAB,exp.food.dining.hawker,3,0
+FAIRPRICE,exp.food.groceries,12,0
+IRAS,exp.tax.income,8,0
+AMAZON,exp.retail.online,9,0
+LAZADA,exp.retail.online,6,0
+ASK,flag,2,1

@@ -1,0 +1,17 @@
+<!doctype html>
+<meta charset="utf-8" />
+<title>OpenEnvelope extension</title>
+<style>
+  body { font-family: ui-monospace, monospace; max-width: 32rem; margin: 2rem auto; }
+  label { display: block; margin: 1rem 0 0.25rem; }
+  input { width: 100%; padding: 8px; }
+  button { margin-top: 1rem; padding: 8px 16px; }
+</style>
+<h1>OpenEnvelope</h1>
+<p>Paste the origin and token from Settings → Connections. The toolbar button only runs on the order-history page you have open.</p>
+<label for="origin">App origin</label>
+<input id="origin" placeholder="https://envelope.example.com" />
+<label for="token">Member token</label>
+<input id="token" autocomplete="off" />
+<button id="save" type="button">Save</button>
+<script src="options.js"></script>

@@ -1,0 +1,42 @@
+OCBC Bank
+   90°N Card Statement
+
+   5524-1001-0018-9905
+
+   STATEMENT DATE     PAYMENT DUE DATE     TOTAL CREDIT LIMIT     AVAILABLE CREDIT     MINIMUM PAYMENT
+   25-03-2026         17-04-2026           S$10,000               S$9,000.00           S$50.00
+
+   Please refer to the Cardmember Agreement for the full terms and conditions
+   applicable to this account including fees, charges and the credit limit.
+
+   STATEMENT DATE
+   25-01-2026
+
+   LAST MONTH'S BALANCE                                                             1,000.00
+
+   TRANSACTION DATE     DESCRIPTION                                              AMOUNT (SGD)
+   28/12   -1111 DEC BOOKSTORE        SINGAPORE   SGP                                 50.00
+   05/01   -2222 JAN GROCER           SINGAPORE   SGP                                 25.00
+   05/01   -8888 BUS/MRT              SINGAPORE   SGP                                  1.23
+   05/01   -8888 BUS/MRT              SINGAPORE   SGP                                  1.23
+   08/01   -3333 AMAZON.COM           SEATTLE     USA                                 91.93
+           FOREIGN CURRENCY USD 25.00
+           FOR: 91.93 SGD
+   10/01   PAYMENT RECEIVED                                                     (200.00 )
+   12/01   -4444 GRAB *HOLDINGS
+Page 1 of 2
+
+OCBC Bank
+   90°N Card Statement
+   5524-1001-0018-9905
+   STATEMENT DATE
+   25-01-2026
+
+           PTE LTD                SINGAPORE   SGP                                      8.50
+
+   SUBTOTAL                                                                           177.89
+   TOTAL                                                                              977.89
+   TOTAL AMOUNT DUE                                                                   977.89
+
+   Please pay the TOTAL AMOUNT DUE by the due date to enjoy annual fee waiver.
+   14/03   ANNUAL FEE WAIVER PROMOTION SINGAPORE SGP                                 160.00

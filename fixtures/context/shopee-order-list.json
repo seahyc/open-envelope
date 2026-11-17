@@ -1,0 +1,19 @@
+{
+  "api": "order/get_order_list",
+  "page": "https://shopee.sg/user/purchase",
+  "note": "Synthetic fixture modelled on a public Shopee purchase-list JSON shape. Not a live capture.",
+  "data": {
+    "order_list": [
+      {
+        "order_id": "220101",
+        "create_time": 1760431200,
+        "currency": "SGD",
+        "total_price": 19900,
+        "item_list": [
+          { "item_name": "AirPods", "amount": 1, "item_price": 18900 },
+          { "item_name": "cable", "amount": 1, "item_price": 1000 }
+        ]
+      }
+    ]
+  }
+}

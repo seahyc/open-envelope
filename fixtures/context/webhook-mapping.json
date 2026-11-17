@@ -1,0 +1,16 @@
+{
+  "type": "order",
+  "version": 1,
+  "event_id": "$.id",
+  "merchant": "$.shop",
+  "order_id": "$.id",
+  "placed_at": "$.created",
+  "currency": "$.currency",
+  "total": "$.grand_total",
+  "items": {
+    "from": "$.lines",
+    "name": "$.title",
+    "qty": "$.quantity",
+    "unit_price": "$.price"
+  }
+}

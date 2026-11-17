@@ -1,0 +1,88 @@
+{
+  "categories": [
+    {
+      "id": "exp.food.dining.hawker",
+      "path": ["Food", "Dining", "Hawker"],
+      "description": "Hawker and food-court meals",
+      "kind": "expense"
+    },
+    {
+      "id": "exp.food.groceries",
+      "path": ["Food", "Groceries"],
+      "description": "Supermarkets and wet markets",
+      "kind": "expense"
+    },
+    {
+      "id": "exp.transport.ride",
+      "path": ["Transport", "Ride-hailing"],
+      "description": "Grab, Gojek, and similar rides",
+      "kind": "expense"
+    },
+    {
+      "id": "exp.transport.transit",
+      "path": ["Transport", "Transit"],
+      "description": "Buses, MRT, and stored-value top-ups",
+      "kind": "expense"
+    },
+    {
+      "id": "exp.retail.online",
+      "path": ["Retail", "Online"],
+      "description": "Marketplace orders until itemised",
+      "kind": "expense"
+    },
+    {
+      "id": "exp.housing.utilities",
+      "path": ["Housing", "Utilities"],
+      "description": "Power, water, and broadband",
+      "kind": "expense"
+    },
+    {
+      "id": "exp.tax.income",
+      "path": ["Tax", "Income Tax"],
+      "description": "IRAS and income-tax payments",
+      "kind": "expense"
+    },
+    {
+      "id": "inc.salary",
+      "path": ["Income", "Salary"],
+      "description": "Pay from an employer",
+      "kind": "income"
+    },
+    {
+      "id": "xfer.card",
+      "path": ["Transfer", "Card Payment"],
+      "description": "Credit-card bill payments",
+      "kind": "transfer"
+    },
+    {
+      "id": "xfer.own",
+      "path": ["Transfer", "Own Account"],
+      "description": "Moves between own accounts",
+      "kind": "transfer"
+    },
+    {
+      "id": "xfer.capital",
+      "path": ["Transfer", "Capital"],
+      "description": "One-off non-budget capital (home purchase, cashier's order)",
+      "kind": "transfer"
+    },
+    {
+      "id": "ref.purchase",
+      "path": ["Refund", "Purchase"],
+      "description": "Merchant refunds",
+      "kind": "refund"
+    },
+    {
+      "id": "fee.bank",
+      "path": ["Fee", "Bank"],
+      "description": "Bank and card fees",
+      "kind": "fee"
+    },
+    {
+      "id": "int.savings",
+      "path": ["Interest", "Savings"],
+      "description": "Interest credited to deposits",
+      "kind": "interest"
+    }
+  ]
+}

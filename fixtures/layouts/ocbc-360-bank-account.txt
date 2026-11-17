@@ -1,0 +1,37 @@
+OCBC Bank
+   360 Account
+   Account Number: 501-234567-001
+   Statement Period: 01 AUG 2026 to 31 AUG 2026
+
+   Date        Value Date   Description                         Withdrawal      Deposit       Balance
+   01 AUG                   BALANCE B/F                                                       1,234.56
+   02 AUG      03 AUG       FAST PAYMENT                           40.00                      1,194.56
+                            via PayNow-Mobile
+                            to JAMIE LIM
+                            OTHR-REF8891
+   05 AUG      05 AUG       SALARY CREDIT                                        3,500.00     4,694.56
+   12 AUG      12 AUG       GIRO - SP SERVICES                     87.30                      4,607.26
+   18 AUG      18 AUG       NTUC FAIRPRICE
+Page 1 of 2
+
+OCBC Bank
+   360 Account
+   Account Number: 501-234567-001
+   Statement Period: 01 AUG 2026 to 31 AUG 2026
+
+   Date        Value Date   Description                         Withdrawal      Deposit       Balance
+                            TAMPINES                               56.20                      4,551.06
+   28 AUG      28 AUG       INTEREST CREDIT                                          1.25     4,552.31
+   29 AUG      29 AUG       CASH DEPOSIT  CDM                                      300.00     4,852.31
+   31 AUG                   BALANCE C/F                                                       4,852.31
+
+   Total Withdrawals: 183.50
+   Total Deposits: 3,801.25
+
+   Deposit Insurance Scheme
+   Singapore dollar deposits of non-bank depositors are insured by the Singapore
+   Deposit Insurance Corporation, for up to S$100,000 in aggregate per depositor
+   per Scheme member by law. Foreign currency deposits, dual currency investments,
+   structured deposits and other investment products are not insured.
+   This includes CPF Investment Scheme accounts.
+   This includes Supplementary Retirement Scheme accounts.

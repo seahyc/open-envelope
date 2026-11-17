@@ -1,0 +1,11 @@
+{
+  "shop": "Lazada SG",
+  "id": "LZ20261012999",
+  "created": "2026-10-12T11:30:00+08:00",
+  "currency": "SGD",
+  "grand_total": 24.5,
+  "lines": [
+    { "title": "Notebook", "quantity": 2, "price": 8.0 },
+    { "title": "Pen set", "quantity": 1, "price": 8.5 }
+  ]
+}

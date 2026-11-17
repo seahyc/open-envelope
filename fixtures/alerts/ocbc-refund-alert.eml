@@ -1,0 +1,14 @@
+From: alerts@ocbc.com.sg
+To: alex@example.com
+Subject: OCBC Card Refund Alert
+Date: Tue, 04 Nov 2026 09:10:00 +0800
+Message-ID: <ocbc-refund-001@ocbc.com.sg>
+
+A refund was processed on your card ending in 2345.
+
+Amount: SGD 12.34
+Merchant: GRAB * RIDE
+Date: 04 NOV 2026
+Time: 09:10 SGT
+
+SGD 12.34 refunded at GRAB * RIDE.

@@ -1,0 +1,14 @@
+From: receipts@ryde.sg
+To: alex@example.test
+Subject: Your Ryde trip receipt
+Date: Wed, 14 Oct 2026 13:40:00 +0000
+Message-ID: <ryde-001@ryde.sg>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+
+Ryde trip receipt
+Booking ID: RYDE778812
+
+Total fare: S$ 12.30
+
+Thank you for choosing Ryde.

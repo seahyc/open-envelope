@@ -1,0 +1,10 @@
+{
+  "type": "txn_alert",
+  "version": 1,
+  "event_id": "wh-alert-001",
+  "account_hint": "ocbc-365",
+  "merchant": "LAZADA SG",
+  "amount": -12.9,
+  "currency": "SGD",
+  "at": "2026-10-12T10:05:00+08:00"
+}

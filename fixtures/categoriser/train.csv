@@ -1,0 +1,21 @@
+id,merchant,account,amount_cents,memo,category_id
+t1,GRAB * RIDE,acc-joint,-1250,airport,exp.transport.ride
+t2,GRAB * RIDE,acc-joint,-890,home,exp.transport.ride
+t3,GRAB * RIDE,acc-joint,-2100,office,exp.transport.ride
+t4,GRABFOOD,acc-joint,-1850,dinner,exp.food.dining.hawker
+t5,FAIRPRICE FINEST,acc-joint,-6420,weekly,exp.food.groceries
+t6,FAIRPRICE XTRA,acc-joint,-3180,milk,exp.food.groceries
+t7,IRAS ITX,acc-joint,-25000,2025,exp.tax.income
+t8,AMAZON SG,acc-card,-4590,order,exp.retail.online
+t9,LAZADA SG,acc-card,-2390,order,exp.retail.online
+t10,PAYNOW SALARY ACME,acc-joint,350000,payroll,inc.salary
+t11,OCBC CARD PAYMENT,acc-joint,-88000,visa,xfer.card
+t12,OWN AC TRANSFER,acc-joint,-50000,to-savings,xfer.own
+t13,SP SERVICES,acc-joint,-9230,power,exp.housing.utilities
+t14,SIMPLYGO,acc-joint,-2000,topup,exp.transport.transit
+t15,BANK FEE,acc-joint,-200,monthly,fee.bank
+t16,INTEREST CREDIT,acc-savings,182,jul,int.savings
+t17,REFUND AMAZON,acc-card,1200,return,ref.purchase
+t18,PINDUODUO,acc-card,-990,gadget,exp.retail.online
+t19,HAWKER CENTRE,acc-joint,-650,lunch,exp.food.dining.hawker
+t20,ASK MERCHANT,acc-joint,-500,unknown,flag

@@ -1,0 +1,9 @@
+version: '3.8'
+
+# Overlay for scripts/docker-compose-smoke.sh
+services:
+  openenvelope:
+    environment:
+      - AUTH_MODE=none
+      - CATEGORISER_PROVIDER=none
+      - LLM_PROVIDER=none

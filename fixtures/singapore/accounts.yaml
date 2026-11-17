@@ -1,0 +1,50 @@
+accounts:
+  - accountName: DBS Current Account
+    accountAlias: "123456789"
+    aliases:
+      - "123456789"
+      - "123-45678-9"
+    accountType: budget
+
+  - accountName: DBS Credit Card
+    accountAlias: "card-6789"
+    aliases:
+      - "card-6789"
+    accountType: credit
+
+  - accountName: OCBC 360 Account
+    accountAlias: "501123456001"
+    aliases:
+      - "501123456001"
+      - "501-123456-001"
+    accountType: budget
+
+  - accountName: OCBC Credit Card
+    accountAlias: "card-2345"
+    aliases:
+      - "card-2345"
+    accountType: credit
+
+  - accountName: PayLah Wallet
+    accountAlias: "paylah"
+    aliases:
+      - "paylah"
+    accountType: budget
+
+  - accountName: CPF Ordinary Account
+    accountAlias: "CPF-OA"
+    aliases:
+      - "CPF-OA"
+    accountType: tracking
+
+  - accountName: CPF Special Account
+    accountAlias: "CPF-SA"
+    aliases:
+      - "CPF-SA"
+    accountType: tracking
+
+  - accountName: CPF Medisave Account
+    accountAlias: "CPF-MA"
+    aliases:
+      - "CPF-MA"
+    accountType: tracking

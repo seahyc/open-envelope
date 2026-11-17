@@ -1,0 +1,20 @@
+{
+  "api": "mtop.taobao.order.queryBoughtList",
+  "page": "https://buyertrade.taobao.com/trade/itemlist/list_bought_items.htm",
+  "note": "Synthetic fixture modelled on a public bought-list JSON shape. Not a live capture.",
+  "data": {
+    "mainOrders": [
+      {
+        "id": "TB20261012001",
+        "createTime": "2026-10-12 09:04:11",
+        "payTime": "2026-10-12 09:04:22",
+        "payInfo": { "actualFee": "101.50", "currency": "CNY" },
+        "seller": { "shopName": "厨房好物店" },
+        "subOrders": [
+          { "title": "不锈钢保温杯", "quantity": 1, "price": "89.00" },
+          { "title": "杯刷替换头", "quantity": 1, "price": "12.50" }
+        ]
+      }
+    ]
+  }
+}

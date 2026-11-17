@@ -1,0 +1,15 @@
+title = "OpenEnvelope Gitleaks Config"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "synthetic-test-data"
+description = "Allow synthetic test data"
+regex = '''(4111-?1111-?1111-?1111|Alex|Sam|alex@example\.com|sam@example\.com)'''
+[[rules.allowlist]]
+paths = [
+    '''(^|\/)fixtures\/''',
+    '''(^|\/)test.*\.(ts|js|json)$''',
+    '''README\.md$''',
+]
