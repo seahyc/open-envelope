@@ -39,6 +39,7 @@ import { registerHookIngestRoute, registerWebhookConnectionRoutes } from './rout
 import { HooksService } from './services/context/hooks-service.js';
 import { IngestEventPipeline } from './services/context/ingest-events.js';
 import { OrderSyncStateStore } from './services/context/order-sync-state.js';
+import { OrderSyncTrigger } from './services/context/order-sync-trigger.js';
 import { DEFAULT_HOUSEHOLD_ID, hh, runWithHouseholdAsync } from './lib/tenancy.js';
 import {
   resolveCurrentMember,
@@ -130,6 +131,15 @@ const calendarPoll = new CalendarPollService(db);
 const triangulate = pipelineService.triangulate;
 const orderMatch = pipelineService.orderMatch;
 const orderSyncState = new OrderSyncStateStore(db);
+const orderSyncTrigger = new OrderSyncTrigger({
+  url: process.env.ORDER_SYNC_TRIGGER_URL,
+  secret: config.emailIngestHmacSecret,
+});
+if (orderSyncTrigger.enabled) {
+  pipelineService.shopChargeListener = (event) => {
+    if (orderSyncTrigger.request(event)) logger.info('Order sync requested', { shop: event.shop });
+  };
+}
 const pushService = new PushService(db);
 const connections = new ConnectionsService(db, calendarPoll, locationIngest);
 const hooks = new HooksService(db);

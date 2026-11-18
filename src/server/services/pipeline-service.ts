@@ -25,6 +25,7 @@ import { parsePayeeAndUen } from './payee-parse.js';
 import { contextFlag } from '../lib/context-flags.js';
 import { TriangulateService } from './context/triangulate.js';
 import { OrderMatchService } from './context/order-match.js';
+import type { ShopChargeEvent } from './context/order-sync-trigger.js';
 
 type ObservationRow = {
   id: string;
@@ -84,6 +85,8 @@ export class PipelineService {
   private enrichment: MerchantEnrichmentService;
   readonly triangulate: TriangulateService;
   readonly orderMatch: OrderMatchService;
+  /** Called for each fresh marketplace charge that no order explains (event-driven order sync). */
+  shopChargeListener: ((event: ShopChargeEvent) => void) | null = null;
 
   constructor(
     private db: Database.Database,
@@ -284,7 +287,18 @@ export class PipelineService {
         // New card/bank lines may be the charge for a marketplace order that arrived earlier.
         // Deterministic and write-limited to orders.matched_transaction_id; runs before categorize
         // so the item titles are available as categoriser context.
-        if (created + merged > 0) this.orderMatch.matchHousehold();
+        if (created + merged > 0) {
+          this.orderMatch.matchHousehold();
+          if (this.shopChargeListener) {
+            for (const event of this.orderMatch.unexplainedShopCharges(state.matchedTxIds)) {
+              try {
+                this.shopChargeListener(event);
+              } catch {
+                // Order sync is best-effort; it must never fail ingestion.
+              }
+            }
+          }
+        }
         return stageResult(state, {
           inputCount: state.observations.length,
           outputCount: created + merged,

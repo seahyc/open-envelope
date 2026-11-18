@@ -4,7 +4,7 @@
   "type": "module",
   "description": "Spike: headless order sync that pushes to OpenEnvelope's signed order ingest",
   "scripts": {
-    "test": "node --test test/"
+    "test": "node --test test/*.test.mjs"
   },
   "dependencies": {
     "playwright-core": "1.64.1"
