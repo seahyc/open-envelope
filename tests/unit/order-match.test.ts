@@ -222,8 +222,12 @@ describe('OrderMatchService', () => {
       total: 2,
       matched: 1,
       unmatched: 1,
+      unmatchedInRange: 1,
       byShop: { shopee: { total: 2, matched: 1, unmatched: 1 } },
     });
+    // Orders from before the ledger begins are not "actionable" unmatched orders.
+    ingest.ingest('', [order('shopee', 'S-old', '2020-01-01', 500)], 'import');
+    expect(matcher.status()).toMatchObject({ unmatched: 2, unmatchedInRange: 1 });
   });
 
   it('feeds item titles to the categoriser as context without touching a labelled transaction', async () => {

@@ -96,6 +96,8 @@ export interface OrdersStatus {
   total: number;
   matched: number;
   unmatched: number;
+  /** Unmatched orders placed late enough that their charge could be in the ledger (excludes pre-history). */
+  unmatchedInRange: number;
   byShop: Record<string, { total: number; matched: number; unmatched: number }>;
 }
 
@@ -292,7 +294,16 @@ export class OrderMatchService {
       total += row.total;
       matched += m;
     }
-    return { total, matched, unmatched: total - matched, byShop };
+    const first = this.db.prepare(`
+      SELECT MIN(t.timestamp) AS at FROM transactions t JOIN accounts a ON a.id = t.account_id
+      WHERE t.household_id = ? AND a.account_group IN ('budget', 'credit')
+    `).get(householdId) as { at: number | null };
+    const inRange = first.at == null ? { n: 0 } : this.db.prepare(`
+      SELECT COUNT(*) AS n FROM orders
+      WHERE household_id = ? AND matched_transaction_id IS NULL
+        AND (ordered_at IS NULL OR ordered_at >= ?)
+    `).get(householdId, first.at - MATCH_WINDOW_AFTER_MS) as { n: number };
+    return { total, matched, unmatched: total - matched, unmatchedInRange: inRange.n, byShop };
   }
 
   /** Matched state of specific orders (for ingest responses). */
