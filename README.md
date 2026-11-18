@@ -356,26 +356,43 @@ The header value becomes the user identifier. All operations are scoped to this 
 
 ### Email Alert Ingestion (Optional)
 
-Use Cloudflare Email Routing + Worker to forward bank alerts:
+Two ways in. Both feed the same ingest path, and both dedupe by `Message-ID`, so you can run them side by side.
 
-1. **Set up Email Routing** in Cloudflare dashboard:
-   - Add your domain
-   - Create email address: `banking@yourdomain.com`
-   - Route to Worker
+#### A. Mailbox poller (simplest, no forwarding rules)
 
-2. **Deploy the Worker**:
+The app reads alert emails straight from your mailbox over IMAP every few minutes. Nothing runs on your laptop, and you need no Cloudflare Worker or mail-forwarding rules.
 
-```bash
-cd cloudflare-worker
-npm install -g wrangler
-wrangler deploy
+For Gmail, turn on 2-Step Verification and create an app password at <https://myaccount.google.com/apppasswords>. Then set:
+
+```
+MAIL_POLL_IMAP_USER=you@gmail.com
+MAIL_POLL_IMAP_PASSWORD=<16-character app password>
+# Optional: send alerts to one member's ingest mailbox (Connections → Email shows the address)
+MAIL_POLL_RECIPIENT=<member ingest address>
 ```
 
-3. **Configure Worker environment variables**:
-   - `OPENENVELOPE_INGEST_URL`: Your OpenEnvelope URL
-   - `OPENENVELOPE_API_KEY`: Optional API key
+On Gmail the poller searches **All Mail**, so alerts that you archive or auto-forward are still found. It uses a Gmail search for bank transaction alerts (OCBC, DBS/POSB/PayLah, UOB). Set `MAIL_POLL_QUERY` to any Gmail search to change it.
 
-4. **Forward alerts**: Set up email forwarding rules in your bank to `banking@yourdomain.com`
+| Variable | Default | Purpose |
+| --- | --- | --- |
+| `MAIL_POLL_IMAP_USER` | unset (poller off) | Mailbox login |
+| `MAIL_POLL_IMAP_PASSWORD` / `MAIL_POLL_IMAP_PASSWORD_FILE` | | App password, or a file that holds it |
+| `MAIL_POLL_IMAP_HOST` / `MAIL_POLL_IMAP_PORT` / `MAIL_POLL_IMAP_TLS` | `imap.gmail.com` for Gmail addresses / `993` / `true` | Other IMAP providers |
+| `MAIL_POLL_MAILBOX` | `auto` (Gmail All Mail, otherwise `INBOX`) | Folder to search |
+| `MAIL_POLL_QUERY` | bank alert search | Gmail search (`X-GM-RAW`); Gmail only |
+| `MAIL_POLL_FROM` | bank alert domains | Comma-separated sender domains or addresses, for non-Gmail servers |
+| `MAIL_POLL_RECIPIENT` | unset (default household) | Member ingest address used for routing |
+| `MAIL_POLL_INTERVAL_SECONDS` | `300` (min 60) | Poll interval. Failures back off up to 1 hour |
+| `MAIL_POLL_LOOKBACK_DAYS` | `3` | Window searched each poll. After an outage the window stretches back to the last good poll. Raise it once to backfill |
+| `MAIL_POLL_MAX_PER_RUN` | `25` | Messages ingested per poll |
+
+`GET /api/connections/mail-poll` shows the last poll, the last success, the last error and the ingested count (`stale: true` after three missed intervals). A message that fails three times is skipped.
+
+#### B. Cloudflare Email Routing → Worker (real time)
+
+Use `workers/email-ingest`. It signs each message with `EMAIL_INGEST_HMAC_SECRET`. Its README covers deployment, the single catch-all routing rule, and the app env (`EMAIL_INGEST_DOMAIN`, `EMAIL_INGEST_HMAC_SECRET`, `PUBLIC_ORIGIN`). Then forward bank alerts to the member's ingest address, for example with a Gmail filter.
+
+The older `cloudflare-worker/` script authenticates with `X-API-Key`. When `EMAIL_INGEST_HMAC_SECRET` is set, the app rejects that header with a 401, so do not deploy it next to an HMAC setup.
 
 ## Backup and Restore
 

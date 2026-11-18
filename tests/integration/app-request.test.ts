@@ -108,6 +108,41 @@ Your DBS account ending in 1234 was debited SGD 23.45 at GROCERY STORE on 26 Oct
     });
   });
 
+  describe('POST /api/ingest/email - raw message/rfc822 (Worker format)', () => {
+    it('dedupes by Message-ID like the JSON format', async () => {
+      const raw = Buffer.from(`From: alerts@dbs.com
+To: user@example.com
+Subject: DBS Transaction Alert
+Message-ID: <raw-dedupe-1@dbs.com>
+Date: Mon, 26 Oct 2026 10:00:00 +0000
+
+Your DBS account ending in 1234 was debited SGD 12.34 at BAKERY on 26 Oct 2026.
+`);
+      const send = () => app.request('/api/ingest/email', {
+        method: 'POST',
+        headers: { 'Content-Type': 'message/rfc822' },
+        body: raw,
+      });
+      const first = await send();
+      expect(first.status).toBe(200);
+      const firstBody = await first.json() as { observationsCreated: number; messageId: string };
+      expect(firstBody.observationsCreated).toBe(1);
+      expect(firstBody.messageId).toBe('<raw-dedupe-1@dbs.com>');
+
+      const second = await send();
+      expect(second.status).toBe(200);
+      expect(await second.json()).toMatchObject({ status: 'duplicate', messageId: '<raw-dedupe-1@dbs.com>' });
+    });
+  });
+
+  describe('GET /api/connections/mail-poll', () => {
+    it('reports disabled when MAIL_POLL_IMAP_USER is not set', async () => {
+      const response = await app.request('/api/connections/mail-poll');
+      expect(response.status).toBe(200);
+      expect(await response.json()).toEqual({ enabled: false });
+    });
+  });
+
   describe('GET /api/connections', () => {
     it('404s without a household member', async () => {
       const response = await app.request('/api/connections');
