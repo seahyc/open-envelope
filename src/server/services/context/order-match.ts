@@ -218,6 +218,32 @@ export class OrderMatchService {
     return { exact, grouped, ambiguous: [...ambiguousOrders].filter((id) => !matchedOrders.has(id)).length, unmatched };
   }
 
+  /**
+   * Marketplace outflows among the given transactions that no order explains yet:
+   * the trigger for an event-driven order fetch.
+   */
+  unexplainedShopCharges(transactionIds: string[], householdId: string = hh()): Array<{
+    shop: Shop;
+    transactionId: string;
+    timestamp: number;
+    amountCents: number;
+  }> {
+    if (transactionIds.length === 0) return [];
+    const ids = [...new Set(transactionIds)].slice(0, 400);
+    const rows = this.db.prepare(`
+      SELECT t.id, t.timestamp, t.amount_cents, t.merchant_text
+      FROM transactions t
+      JOIN accounts a ON a.id = t.account_id
+      WHERE t.household_id = ? AND a.account_group IN ('budget', 'credit') AND t.amount_cents < 0
+        AND t.id IN (${ids.map(() => '?').join(', ')})
+        AND NOT EXISTS (SELECT 1 FROM orders o WHERE o.household_id = t.household_id AND o.matched_transaction_id = t.id)
+    `).all(householdId, ...ids) as Array<{ id: string; timestamp: number; amount_cents: number; merchant_text: string }>;
+    return rows.flatMap((row) => {
+      const shop = shopForMerchantText(row.merchant_text);
+      return shop ? [{ shop, transactionId: row.id, timestamp: row.timestamp, amountCents: row.amount_cents }] : [];
+    });
+  }
+
   /** Item lines of orders matched to the given transactions, keyed by transaction id. */
   itemsForTransactions(transactionIds: string[], householdId: string = hh()): Map<string, OrderItemView[]> {
     const out = new Map<string, OrderItemView[]>();
