@@ -712,6 +712,29 @@ export const migrations: Migration[] = [
       ALTER TABLE ingest_mailboxes ADD COLUMN last_parse_status TEXT;
     `,
   },
+  {
+    version: 19,
+    name: 'mail_poll_state',
+    up: `
+      CREATE TABLE IF NOT EXISTS mail_poll_state (
+        source_key TEXT PRIMARY KEY,
+        uid_validity TEXT,
+        last_poll_at INTEGER,
+        last_success_at INTEGER,
+        last_error TEXT,
+        last_ingested_at INTEGER,
+        ingested_total INTEGER NOT NULL DEFAULT 0
+      );
+      CREATE TABLE IF NOT EXISTS mail_poll_seen (
+        source_key TEXT NOT NULL,
+        uid INTEGER NOT NULL,
+        status TEXT NOT NULL,
+        attempts INTEGER NOT NULL DEFAULT 0,
+        updated_at INTEGER NOT NULL,
+        PRIMARY KEY (source_key, uid)
+      );
+    `,
+  },
 ];
 
 export function runMigrations(

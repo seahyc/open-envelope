@@ -26,6 +26,7 @@ import crypto from 'crypto';
 import { contextFlag } from './lib/context-flags.js';
 import { LocationIngestService } from './services/context/location-ingest.js';
 import { CalendarPollService } from './services/context/calendar-poll.js';
+import { MailPollService, imapConnector, loadMailPollConfig } from './services/context/mail-poll.js';
 import { parseReceiptEmail } from './services/context/order-parsers.js';
 import { purgeOldInboundMail, purgeOldHookEvents, purgeOldLocationPoints } from './services/context/retention.js';
 import { PushService, webPushEnabled } from './services/push-service.js';
@@ -143,6 +144,26 @@ if (!process.env.VITEST) {
     purgeOldHookEvents(db);
   }, 15 * 60 * 1000);
 }
+
+const mailPollConfig = loadMailPollConfig();
+function mailPollTarget(): { memberId: string | null; householdId: string } | null {
+  if (!mailPollConfig?.recipient) return { memberId: null, householdId: DEFAULT_HOUSEHOLD_ID };
+  const mailbox = connections.mailboxForRecipient(mailPollConfig.recipient);
+  if (!mailbox) return null;
+  return { memberId: mailbox.memberId, householdId: mailbox.householdId || DEFAULT_HOUSEHOLD_ID };
+}
+const mailPoll = new MailPollService(
+  db,
+  mailPollConfig,
+  async (raw) => {
+    const target = mailPollTarget();
+    if (!target) throw new Error('MAIL_POLL_RECIPIENT does not match any ingest mailbox');
+    const outcome = await runWithHouseholdAsync(target.householdId, () => ingestRawEmail(raw, target.memberId));
+    return { status: String(outcome.status ?? 'processed') };
+  },
+  imapConnector,
+  { preflight: () => (mailPollTarget() ? null : 'MAIL_POLL_RECIPIENT does not match any ingest mailbox') },
+);
 
 async function tryIngestOrder(emailText: string, documentHash: string, memberId?: string | null): Promise<string | null> {
   if (!contextFlag('orders')) return null;
@@ -952,6 +973,15 @@ registerConnectionRoutes(app, {
   authMode: config.authMode,
 });
 registerOrdersIngestRoute(app, { db, connections, triangulate });
+
+app.get('/api/connections/mail-poll', (c) => {
+  // Instance-level poller: only the household it feeds may see its status.
+  const householdId = mailPollTarget()?.householdId ?? DEFAULT_HOUSEHOLD_ID;
+  if (!mailPoll.enabled || householdId !== hh()) {
+    return c.json({ enabled: false });
+  }
+  return c.json(mailPoll.status());
+});
 registerHookIngestRoute(app, { db, hooks, triangulate });
 registerWebhookConnectionRoutes(app, { db, hooks, triangulate });
 
@@ -997,6 +1027,112 @@ app.post('/api/context/links/:id/reject', async (c) => {
   return c.json({ ok: true });
 });
 
+type EmailIngestOutcome = Record<string, unknown>;
+
+/**
+ * Single ingestion path for one raw RFC822 message. Used by POST /api/ingest/email
+ * (Cloudflare Worker, JSON raw_rfc822, raw body) and by the in-app mailbox poller.
+ * Callers run it inside the target household context.
+ */
+async function ingestRawEmail(rawEmail: Buffer, memberId: string | null): Promise<EmailIngestOutcome> {
+  const emailText = rawEmail.toString('utf-8');
+
+  const messageIdMatch = emailText.match(/^Message-ID:\s*(.+)$/im);
+  const messageId = messageIdMatch ? messageIdMatch[1]!.trim() : null;
+
+  if (messageId) {
+    const existing = db
+      .prepare('SELECT hash FROM raw_documents WHERE filename = ?')
+      .get(`email_${messageId}`) as { hash: string } | undefined;
+
+    if (existing) {
+      logger.info('Email already ingested', { messageId });
+      return { success: true, status: 'duplicate', messageId };
+    }
+  }
+
+  const documentHash = crypto.createHash('sha256').update(rawEmail).digest('hex');
+  const filename = messageId ? `email_${messageId}` : `email_${documentHash.substring(0, 8)}.eml`;
+
+  const doc = await documentStore.store(filename, rawEmail);
+
+  const existingDoc = db.prepare('SELECT hash FROM raw_documents WHERE hash = ?').get(doc.hash) as { hash: string } | undefined;
+
+  if (!existingDoc) {
+    db.prepare(`
+      INSERT INTO raw_documents (hash, household_id, filename, mime_type, uploaded_at, size_bytes)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `).run(doc.hash, hh(), doc.filename, doc.mimeType, doc.uploadedAt, doc.sizeBytes);
+  }
+
+  const gmailVerify = parseGmailForwardingVerify(emailText);
+  if (gmailVerify && memberId) {
+    connections.recordGmailVerify(memberId, gmailVerify);
+    connections.recordInbound(memberId, documentHash, 'gmail_verify');
+    return { success: true, status: 'gmail_verify', messageId, documentHash };
+  }
+
+  const orderId = await tryIngestOrder(emailText, documentHash, memberId);
+  if (orderId) {
+    connections.recordInbound(memberId, documentHash, 'order');
+    return { success: true, status: 'order', orderId, messageId, documentHash };
+  }
+
+  const classification = await triageService.classifyEmail(emailText);
+
+  if (classification.classification === 'promotional' || classification.classification === 'otp') {
+    db.prepare(`
+      INSERT INTO review_queue (id, household_id, document_hash, reason, detail, created_at)
+      VALUES (?, ?, ?, ?, ?, ?)
+    `).run(
+      crypto.randomBytes(8).toString('hex'),
+      hh(),
+      documentHash,
+      'non_transaction_email',
+      JSON.stringify({
+        classification: classification.classification,
+        messageId,
+      }),
+      Date.now()
+    );
+
+    logger.info('Non-transaction email sent to review queue', {
+      classification: classification.classification,
+      messageId,
+      documentHash,
+    });
+    return {
+      success: true,
+      status: 'review_queue',
+      classification: classification.classification,
+      messageId,
+      documentHash,
+    };
+  }
+
+  const stored = await persistResolvedEmail(rawEmail, filename, doc.mimeType, documentHash, emailText, memberId);
+
+  logger.info('Raw email stored and processed', {
+    documentHash,
+    messageId,
+    observationsCreated: stored.observationsCreated,
+    classification: classification.classification,
+    parseMethod: stored.method,
+    parseConfidence: stored.confidence,
+  });
+
+  return {
+    success: true,
+    status: 'processed',
+    messageId,
+    classification: classification.classification,
+    documentHash,
+    observationsCreated: stored.observationsCreated,
+    parseMethod: stored.method,
+    parseConfidence: stored.confidence,
+  };
+}
+
 app.post('/api/ingest/email', async (c) => {
   const rawRequest = Buffer.from(await c.req.arrayBuffer());
   if (!authorizeEmailIngest({
@@ -1014,11 +1150,9 @@ app.post('/api/ingest/email', async (c) => {
   try {
     const contentType = c.req.header('content-type') || '';
     let body: { raw_rfc822?: string; recipient?: string } | null = null;
-    let isRfc822Format = false;
 
     if (contentType.includes('application/json')) {
       body = JSON.parse(rawRequest.toString('utf8')) as { raw_rfc822?: string; recipient?: string };
-      isRfc822Format = !!body.raw_rfc822;
     }
 
     const requestedRecipient = c.req.header('X-OE-Recipient') || body?.recipient || null;
@@ -1027,192 +1161,10 @@ app.post('/api/ingest/email', async (c) => {
       return new Response(null, { status: 401 });
     }
     const memberId = mailbox?.memberId ?? null;
+    // JSON { raw_rfc822: base64 } or the raw message itself (message/rfc822 from the Worker).
+    const rawEmail = body?.raw_rfc822 ? Buffer.from(body.raw_rfc822, 'base64') : rawRequest;
     return await runWithHouseholdAsync(mailbox?.householdId || DEFAULT_HOUSEHOLD_ID, async () => {
-
-    if (isRfc822Format && body?.raw_rfc822) {
-      const rawEmail = Buffer.from(body.raw_rfc822, 'base64');
-      const emailText = rawEmail.toString('utf-8');
-      
-      const messageIdMatch = emailText.match(/^Message-ID:\s*(.+)$/im);
-      const messageId = messageIdMatch ? messageIdMatch[1]!.trim() : null;
-
-      if (messageId) {
-        const existing = db
-          .prepare('SELECT hash FROM raw_documents WHERE filename = ?')
-          .get(`email_${messageId}`) as { hash: string } | undefined;
-
-        if (existing) {
-          logger.info('Email already ingested', { messageId });
-          return c.json({ success: true, status: 'duplicate', messageId });
-        }
-      }
-
-      const documentHash = crypto.createHash('sha256').update(rawEmail).digest('hex');
-      const filename = messageId ? `email_${messageId}` : `email_${documentHash.substring(0, 8)}.eml`;
-
-      const doc = await documentStore.store(filename, rawEmail);
-
-      const existingDoc = db.prepare('SELECT hash FROM raw_documents WHERE hash = ?').get(doc.hash) as { hash: string } | undefined;
-
-      if (!existingDoc) {
-        db.prepare(`
-          INSERT INTO raw_documents (hash, household_id, filename, mime_type, uploaded_at, size_bytes)
-          VALUES (?, ?, ?, ?, ?, ?)
-        `).run(doc.hash, hh(), doc.filename, doc.mimeType, doc.uploadedAt, doc.sizeBytes);
-      }
-
-      const gmailVerify = parseGmailForwardingVerify(emailText);
-      if (gmailVerify && memberId) {
-        connections.recordGmailVerify(memberId, gmailVerify);
-        connections.recordInbound(memberId, documentHash, 'gmail_verify');
-        return c.json({ success: true, status: 'gmail_verify', messageId, documentHash });
-      }
-
-      const orderId = await tryIngestOrder(emailText, documentHash, memberId);
-      if (orderId) {
-        connections.recordInbound(memberId, documentHash, 'order');
-        return c.json({
-          success: true,
-          status: 'order',
-          orderId,
-          messageId,
-          documentHash,
-        });
-      }
-
-      const classification = await triageService.classifyEmail(emailText);
-      
-      if (classification.classification === 'promotional' || classification.classification === 'otp') {
-        db.prepare(`
-          INSERT INTO review_queue (id, household_id, document_hash, reason, detail, created_at)
-          VALUES (?, ?, ?, ?, ?, ?)
-        `).run(
-          crypto.randomBytes(8).toString('hex'),
-          hh(),
-          documentHash,
-          'non_transaction_email',
-          JSON.stringify({ 
-            classification: classification.classification,
-            messageId,
-          }),
-          Date.now()
-        );
-
-        logger.info('Non-transaction email sent to review queue', { 
-          classification: classification.classification, 
-          messageId,
-          documentHash,
-        });
-        return c.json({ 
-          success: true, 
-          status: 'review_queue',
-          classification: classification.classification, 
-          messageId,
-          documentHash,
-        });
-      }
-
-      const stored = await persistResolvedEmail(rawEmail, filename, doc.mimeType, documentHash, emailText, memberId);
-
-      logger.info('Raw email stored and processed', {
-        documentHash,
-        messageId,
-        observationsCreated: stored.observationsCreated,
-        classification: classification.classification,
-        parseMethod: stored.method,
-        parseConfidence: stored.confidence,
-      });
-
-      return c.json({
-        success: true,
-        messageId,
-        classification: classification.classification,
-        documentHash,
-        observationsCreated: stored.observationsCreated,
-        parseMethod: stored.method,
-        parseConfidence: stored.confidence,
-      });
-    }
-
-    const buffer = rawRequest;
-    
-    logger.info('Ingesting email (legacy format)', { size: buffer.length });
-    
-    const documentHash = crypto.createHash('sha256').update(buffer).digest('hex');
-    const doc = await documentStore.store('email-ingest.eml', buffer);
-    
-    const existingDoc = db.prepare('SELECT hash FROM raw_documents WHERE hash = ?').get(doc.hash) as { hash: string } | undefined;
-    
-    if (!existingDoc) {
-      db.prepare(`
-        INSERT INTO raw_documents (hash, household_id, filename, mime_type, uploaded_at, size_bytes)
-        VALUES (?, ?, ?, ?, ?, ?)
-      `).run(doc.hash, hh(), doc.filename, doc.mimeType, doc.uploadedAt, doc.sizeBytes);
-    }
-    
-    const emailText = buffer.toString('utf-8');
-    const gmailVerify = parseGmailForwardingVerify(emailText);
-    if (gmailVerify && memberId) {
-      connections.recordGmailVerify(memberId, gmailVerify);
-      connections.recordInbound(memberId, documentHash, 'gmail_verify');
-      return c.json({ success: true, status: 'gmail_verify', documentHash });
-    }
-    const orderId = await tryIngestOrder(emailText, documentHash, memberId);
-    if (orderId) {
-      connections.recordInbound(memberId, documentHash, 'order');
-      return c.json({
-        success: true,
-        status: 'order',
-        orderId,
-        documentHash,
-      });
-    }
-    const classification = await triageService.classifyEmail(emailText);
-    
-    if (classification.classification === 'promotional' || classification.classification === 'otp') {
-      db.prepare(`
-        INSERT INTO review_queue (id, household_id, document_hash, reason, detail, created_at)
-        VALUES (?, ?, ?, ?, ?, ?)
-      `).run(
-        crypto.randomBytes(8).toString('hex'),
-        hh(),
-        documentHash,
-        'non_transaction_email',
-        JSON.stringify({ 
-          classification: classification.classification,
-        }),
-        Date.now()
-      );
-
-      logger.info('Legacy email sent to review queue', { 
-        classification: classification.classification,
-        documentHash,
-      });
-      return c.json({
-        success: true,
-        status: 'review_queue',
-        classification: classification.classification,
-        documentHash,
-      });
-    }
-    
-    const stored = await persistResolvedEmail(buffer, doc.filename, doc.mimeType, documentHash, emailText, memberId);
-
-    logger.info('Email ingest completed', {
-      documentHash,
-      observationsCreated: stored.observationsCreated,
-      classification: classification.classification,
-      parseMethod: stored.method,
-      parseConfidence: stored.confidence,
-    });
-
-    return c.json({
-      documentHash,
-      observationsCreated: stored.observationsCreated,
-      classification: classification.classification,
-      parseMethod: stored.method,
-      parseConfidence: stored.confidence,
-    });
+      return c.json(await ingestRawEmail(rawEmail, memberId));
     });
   } catch (error) {
     logger.error('Email ingest failed', { error: error instanceof Error ? error.message : String(error) });
@@ -1451,6 +1403,10 @@ serve({
   fetch: app.fetch,
   port: PORT,
 });
+
+if (!process.env.VITEST) {
+  mailPoll.start();
+}
 
 logger.info('Server running', { url: `http://localhost:${PORT}` });
 
