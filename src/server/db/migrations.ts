@@ -735,6 +735,42 @@ export const migrations: Migration[] = [
       );
     `,
   },
+  {
+    // Merchant order enrichment: extends the existing orders/order_items tables (additive only)
+    // so marketplace orders can be linked deterministically to the card/bank charge that paid them.
+    version: 20,
+    name: 'merchant_order_enrichment',
+    up: `
+      ALTER TABLE orders ADD COLUMN status TEXT;
+      ALTER TABLE orders ADD COLUMN buyer_account TEXT;
+      ALTER TABLE orders ADD COLUMN matched_transaction_id TEXT;
+      ALTER TABLE orders ADD COLUMN match_method TEXT;
+      ALTER TABLE orders ADD COLUMN matched_at INTEGER;
+      ALTER TABLE orders ADD COLUMN raw_json TEXT;
+      ALTER TABLE orders ADD COLUMN updated_at INTEGER;
+      ALTER TABLE order_items ADD COLUMN sku TEXT;
+      ALTER TABLE order_items ADD COLUMN url TEXT;
+      ALTER TABLE order_items ADD COLUMN suggested_category TEXT;
+      CREATE INDEX IF NOT EXISTS idx_orders_matched_tx
+        ON orders(household_id, matched_transaction_id);
+      CREATE INDEX IF NOT EXISTS idx_orders_merchant_placed
+        ON orders(household_id, merchant, ordered_at);
+      CREATE INDEX IF NOT EXISTS idx_order_items_order
+        ON order_items(order_id);
+      -- Health of an always-on order sync per shop (e.g. a headless sidecar), so an expired
+      -- session shows up in the app as "re-auth needed" instead of silently stopping.
+      CREATE TABLE IF NOT EXISTS order_sync_state (
+        household_id TEXT NOT NULL,
+        shop TEXT NOT NULL,
+        state TEXT NOT NULL,
+        detail TEXT,
+        last_attempt_at INTEGER,
+        last_success_at INTEGER,
+        updated_at INTEGER NOT NULL,
+        PRIMARY KEY (household_id, shop)
+      );
+    `,
+  },
 ];
 
 export function runMigrations(

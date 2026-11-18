@@ -35,6 +35,11 @@ interface HomeGlance {
     amountCents: number;
     timestamp: number;
   }>;
+  orders?: {
+    total: number;
+    unmatched: number;
+    syncNeedsAttention: Array<{ shop: string; state: string }>;
+  };
 }
 
 interface HomeViewProps {
@@ -171,6 +176,19 @@ export function HomeView({ onReview, onBudget }: HomeViewProps) {
             <span>{reviewCount} to check · about {Math.max(1, Math.round(reviewCount / 12))} min</span>
             <span>→</span>
           </button>
+        ) : null}
+
+        {glance.orders && (glance.orders.unmatched > 0 || glance.orders.syncNeedsAttention.length > 0) ? (
+          <p className="home-muted" data-testid="home-orders">
+            {glance.orders.unmatched > 0
+              ? `${glance.orders.unmatched} shop order${glance.orders.unmatched === 1 ? '' : 's'} not matched to a charge yet.`
+              : null}
+            {glance.orders.syncNeedsAttention.map((row) => (
+              <span key={row.shop} style={{ display: 'block' }}>
+                {row.shop} order sync: {row.state === 'reauth_needed' ? 're-auth needed' : row.state}
+              </span>
+            ))}
+          </p>
         ) : null}
 
         <section className="card home-section" data-testid="home-spent">

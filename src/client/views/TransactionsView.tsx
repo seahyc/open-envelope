@@ -9,6 +9,16 @@ interface ContextSnippet {
   memberName: string | null;
 }
 
+interface OrderItem {
+  title: string;
+  qty: number;
+  priceCents: number | null;
+  shop: string;
+  orderRef: string;
+  url: string | null;
+  suggestedCategory: string | null;
+}
+
 interface Transaction {
   id: string;
   account_id: string;
@@ -21,6 +31,7 @@ interface Transaction {
   envelope_id: string | null;
   notes: string | null;
   contextSnippets?: ContextSnippet[];
+  items?: OrderItem[];
 }
 
 export function TransactionsView() {
@@ -143,7 +154,17 @@ export function TransactionsView() {
                 <Fragment key={tx.id}>
                   <tr onClick={() => setOpenId(openId === tx.id ? null : tx.id)} style={{ cursor: 'pointer' }}>
                     <td>{formatDate(tx.timestamp)}</td>
-                    <td>{tx.merchant_text}</td>
+                    <td>
+                      {tx.merchant_text}
+                      {(tx.items ?? []).length > 0 ? (
+                        <span
+                          data-testid="ledger-items-count"
+                          style={{ color: 'var(--color-text-dim)', fontSize: '0.75rem', marginLeft: '0.5rem' }}
+                        >
+                          {openId === tx.id ? '▾' : '▸'} {(tx.items ?? []).length} item{(tx.items ?? []).length === 1 ? '' : 's'}
+                        </span>
+                      ) : null}
+                    </td>
                     <td className={`amount ${tx.amount_cents < 0 ? 'amount-negative' : 'amount-positive'}`}>
                       {tx.amount_cents < 0 ? '-' : '+'}
                       {formatAmount(tx.amount_cents)}
@@ -157,6 +178,32 @@ export function TransactionsView() {
                       {tx.category || 'Uncategorized'}
                     </td>
                   </tr>
+                  {openId === tx.id && (tx.items ?? []).length > 0 ? (
+                    <tr key={`${tx.id}-items`}>
+                      <td colSpan={5}>
+                        <div className="review-context" data-testid="ledger-items">
+                          {(tx.items ?? []).map((item, index) => (
+                            <p key={`${item.orderRef}-${index}`} style={{ display: 'flex', gap: '0.75rem', justifyContent: 'space-between' }}>
+                              <span>
+                                {item.qty > 1 ? `${item.qty}× ` : ''}
+                                {item.url ? (
+                                  <a href={item.url} target="_blank" rel="noreferrer noopener">{item.title}</a>
+                                ) : item.title}
+                                {item.suggestedCategory ? (
+                                  <span style={{ color: 'var(--color-text-dim)', fontSize: '0.75rem', marginLeft: '0.5rem' }}>
+                                    {item.suggestedCategory.replace(/_/g, ' ')}?
+                                  </span>
+                                ) : null}
+                              </span>
+                              <span className="amount" style={{ color: 'var(--color-text-dim)', whiteSpace: 'nowrap' }}>
+                                {item.priceCents != null ? formatAmount(item.priceCents) : ''}
+                              </span>
+                            </p>
+                          ))}
+                        </div>
+                      </td>
+                    </tr>
+                  ) : null}
                   {openId === tx.id && (tx.contextSnippets ?? []).length > 0 ? (
                     <tr key={`${tx.id}-ctx`}>
                       <td colSpan={5}>

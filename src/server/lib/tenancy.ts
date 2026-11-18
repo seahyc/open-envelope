@@ -55,6 +55,7 @@ export const TENANT_TABLES = [
   'payee_notes',
   'ingest_hooks',
   'ingest_hook_events',
+  'order_sync_state',
 ] as const;
 
 export type TenantTable = (typeof TENANT_TABLES)[number];
