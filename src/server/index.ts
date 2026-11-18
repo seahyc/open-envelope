@@ -539,7 +539,7 @@ app.get('/api/home', (c) => {
       ...homeService.glance(Number.isFinite(asOf) ? asOf : Date.now()),
       orders: {
         total: status.total,
-        unmatched: status.unmatched,
+        unmatched: status.unmatchedInRange,
         syncNeedsAttention: sync.filter((row) => row.state !== 'ok').map((row) => ({ shop: row.shop, state: row.state })),
       },
     });
