@@ -24,6 +24,7 @@ import {
 import { parsePayeeAndUen } from './payee-parse.js';
 import { contextFlag } from '../lib/context-flags.js';
 import { TriangulateService } from './context/triangulate.js';
+import { OrderMatchService } from './context/order-match.js';
 
 type ObservationRow = {
   id: string;
@@ -82,6 +83,7 @@ export class PipelineService {
   private transferService: TransferService;
   private enrichment: MerchantEnrichmentService;
   readonly triangulate: TriangulateService;
+  readonly orderMatch: OrderMatchService;
 
   constructor(
     private db: Database.Database,
@@ -100,6 +102,7 @@ export class PipelineService {
     this.transferService = new TransferService(db);
     this.enrichment = enrichmentServiceFromEnv(db);
     this.triangulate = new TriangulateService(db);
+    this.orderMatch = new OrderMatchService(db);
   }
 
   async processDocument(
@@ -278,6 +281,10 @@ export class PipelineService {
             state.matchedTxIds.push(txResult.transactionId);
           }
         }
+        // New card/bank lines may be the charge for a marketplace order that arrived earlier.
+        // Deterministic and write-limited to orders.matched_transaction_id; runs before categorize
+        // so the item titles are available as categoriser context.
+        if (created + merged > 0) this.orderMatch.matchHousehold();
         return stageResult(state, {
           inputCount: state.observations.length,
           outputCount: created + merged,

@@ -38,6 +38,7 @@ import { registerConnectionRoutes, registerOrdersIngestRoute } from './routes/co
 import { registerHookIngestRoute, registerWebhookConnectionRoutes } from './routes/hooks.js';
 import { HooksService } from './services/context/hooks-service.js';
 import { IngestEventPipeline } from './services/context/ingest-events.js';
+import { OrderSyncStateStore } from './services/context/order-sync-state.js';
 import { DEFAULT_HOUSEHOLD_ID, hh, runWithHouseholdAsync } from './lib/tenancy.js';
 import {
   resolveCurrentMember,
@@ -127,6 +128,8 @@ const homeService = new HomeService(db, pipelineService.categoriser.schema, (mon
 const locationIngest = new LocationIngestService(db);
 const calendarPoll = new CalendarPollService(db);
 const triangulate = pipelineService.triangulate;
+const orderMatch = pipelineService.orderMatch;
+const orderSyncState = new OrderSyncStateStore(db);
 const pushService = new PushService(db);
 const connections = new ConnectionsService(db, calendarPoll, locationIngest);
 const hooks = new HooksService(db);
@@ -281,6 +284,7 @@ app.use('*', async (c, next) => {
     || path === '/api/ingest/email'
     || path === '/api/ingest/location'
     || path === '/api/ingest/orders'
+    || path === '/api/ingest/orders/sync-status'
     || path.startsWith('/api/hooks/')
     || path.startsWith('/api/auth/')
     || path.startsWith('/api/join/')
@@ -529,7 +533,16 @@ app.get('/api/home', (c) => {
   try {
     const asOfRaw = c.req.query('asOf');
     const asOf = asOfRaw ? Number(asOfRaw) : Date.now();
-    return c.json(homeService.glance(Number.isFinite(asOf) ? asOf : Date.now()));
+    const status = orderMatch.status(hh());
+    const sync = orderSyncState.list(hh());
+    return c.json({
+      ...homeService.glance(Number.isFinite(asOf) ? asOf : Date.now()),
+      orders: {
+        total: status.total,
+        unmatched: status.unmatched,
+        syncNeedsAttention: sync.filter((row) => row.state !== 'ok').map((row) => ({ shop: row.shop, state: row.state })),
+      },
+    });
   } catch (error) {
     logger.error('Home glance failed', { error: error instanceof Error ? error.message : String(error) });
     return c.json({ error: error instanceof Error ? error.message : 'Home glance failed' }, 500);
@@ -972,7 +985,17 @@ registerConnectionRoutes(app, {
   connections,
   authMode: config.authMode,
 });
-registerOrdersIngestRoute(app, { db, connections, triangulate });
+registerOrdersIngestRoute(app, {
+  db,
+  connections,
+  triangulate,
+  orderMatch,
+  hmacSecret: config.emailIngestHmacSecret,
+});
+
+app.get('/api/orders/status', (c) => {
+  return c.json({ ...orderMatch.status(hh()), sync: orderSyncState.list(hh()) });
+});
 
 app.get('/api/connections/mail-poll', (c) => {
   // Instance-level poller: only the household it feeds may see its status.
@@ -1192,9 +1215,20 @@ app.get('/api/transactions', (c) => {
   query += ' ORDER BY timestamp DESC LIMIT 100';
 
   const rows = db.prepare(query).all(...params) as Array<{ id: string }>;
+  const items = orderMatch.itemsForTransactions(rows.map((row) => row.id));
   return c.json(rows.map((row) => ({
     ...row,
     contextSnippets: triangulate.snippetsFor(row.id),
+    items: (items.get(row.id) ?? []).map((item) => ({
+      title: item.title,
+      qty: item.qty,
+      priceCents: item.lineCents,
+      unitPriceCents: item.unitCents,
+      shop: item.shop,
+      orderRef: item.orderRef,
+      url: item.url,
+      suggestedCategory: item.suggestedCategory,
+    })),
   })));
 });
 

@@ -13,6 +13,7 @@ import { MerchantMemory } from './memory.js';
 import { assemblePrompt, buildPromptParts, DEFAULT_TOKEN_BUDGET, type PromptOption, type TransactionFacts } from './prompt.js';
 import { formatEnrichmentLine, readCachedEnrichment } from '../services/merchant-enrichment-service.js';
 import { TriangulateService } from '../services/context/triangulate.js';
+import { OrderMatchService } from '../services/context/order-match.js';
 import { createCategoriserProvider, type CategoriserProvider, type ProviderDecision } from './providers.js';
 import { loadCondensedRules } from './rules.js';
 import { findCategory, leavesUnderL1, loadCategorySchema, uniqueL1, type CategoryKind, type CategorySchema } from './schema.js';
@@ -255,7 +256,7 @@ export class CategoriserService {
       accountId: tx.account_id,
       amountCents: tx.amount_cents,
       memo: tx.notes,
-      contextEvidence: new TriangulateService(this.db).evidenceLine(transactionId),
+      contextEvidence: this.contextEvidence(transactionId),
     });
 
     if (outcome.applied && outcome.categoryId) {
@@ -281,6 +282,19 @@ export class CategoriserService {
       );
     }
     return outcome;
+  }
+
+  /**
+   * Extra facts for the prompt: triangulated context plus the items of any matched
+   * marketplace order. Advisory only: this path runs for uncategorised transactions
+   * and a user's category is never overridden.
+   */
+  contextEvidence(transactionId: string): string | null {
+    const parts = [
+      new TriangulateService(this.db).evidenceLine(transactionId),
+      new OrderMatchService(this.db).evidenceLine(transactionId),
+    ].filter((part): part is string => Boolean(part));
+    return parts.length ? parts.join('; ') : null;
   }
 
   recordCorrection(transactionId: string, categoryId: string): void {
