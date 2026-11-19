@@ -23,6 +23,7 @@ import {
 } from './merchant-enrichment-service.js';
 import { parsePayeeAndUen } from './payee-parse.js';
 import { contextFlag } from '../lib/context-flags.js';
+import { merchantsCompatible } from '../lib/merchant-compat.js';
 import { TriangulateService } from './context/triangulate.js';
 import { OrderMatchService } from './context/order-match.js';
 import type { ShopChargeEvent } from './context/order-sync-trigger.js';
@@ -481,7 +482,6 @@ export class PipelineService {
           AND timestamp BETWEEN ? AND ?
           AND ABS(amount_cents - ?) <= ?
           AND ${sameSign}
-          AND merchant_text LIKE ?
         ORDER BY ABS(timestamp - ?) ASC
       `)
       .all(
@@ -491,11 +491,14 @@ export class PipelineService {
         windowEnd,
         obs.amount_cents,
         amountTolerance,
-        `%${obs.merchant_text.substring(0, 20)}%`,
         obs.timestamp
       ) as Array<{ id: string; timestamp: number; amount_cents: number; merchant_text: string; observation_ids: string; state: string }>;
-    
+
+    const merchantPrefix = obs.merchant_text.substring(0, 20);
     const filteredCandidates = candidates.filter(candidate => {
+      if (!candidate.merchant_text.includes(merchantPrefix) && !merchantsCompatible(obs.merchant_text, candidate.merchant_text)) {
+        return false;
+      }
       const existingObsIds = JSON.parse(candidate.observation_ids) as string[];
       for (const existingObsId of existingObsIds) {
         const existingObs = this.db.prepare('SELECT adapter_name, is_statement FROM observations WHERE id = ?').get(existingObsId) as { adapter_name: string; is_statement: number } | undefined;
