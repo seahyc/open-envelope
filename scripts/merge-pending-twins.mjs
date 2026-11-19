@@ -22,12 +22,11 @@ function normalize(text) {
 function compatible(a, b) {
   const na = normalize(a);
   const nb = normalize(b);
-  if (!na || !nb) return false;
-  const k = Math.min(na.length, nb.length, 20);
-  if (k < 5) return false;
-  const pa = na.slice(0, k);
-  const pb = nb.slice(0, k);
-  return pa === pb || na.includes(pb) || nb.includes(pa);
+  const shorter = Math.min(na.length, nb.length);
+  if (shorter < 5) return false;
+  let common = 0;
+  while (common < shorter && na[common] === nb[common]) common++;
+  return common >= Math.min(8, shorter) || na.includes(nb.slice(0, 12)) || nb.includes(na.slice(0, 12));
 }
 
 const db = new Database(dbPath);
