@@ -16,10 +16,10 @@ export function normalizeMerchantForMatch(text: string): string {
 export function merchantsCompatible(a: string, b: string): boolean {
   const na = normalizeMerchantForMatch(a);
   const nb = normalizeMerchantForMatch(b);
-  if (!na || !nb) return false;
-  const k = Math.min(na.length, nb.length, 20);
-  if (k < 5) return false;
-  const pa = na.slice(0, k);
-  const pb = nb.slice(0, k);
-  return pa === pb || na.includes(pb) || nb.includes(pa);
+  const shorter = Math.min(na.length, nb.length);
+  if (shorter < 5) return false;
+  let common = 0;
+  while (common < shorter && na[common] === nb[common]) common++;
+  // Statements truncate and rewrite text, so a long shared prefix is enough.
+  return common >= Math.min(8, shorter) || na.includes(nb.slice(0, 12)) || nb.includes(na.slice(0, 12));
 }
